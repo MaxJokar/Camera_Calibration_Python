@@ -8,12 +8,13 @@ import glob
 import pickle
 from matplotlib import pyplot as plt
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
-#  size of images are very importatnt for the small ones and big ones given below !
+# 1. size of images are very importatnt for the small ones and big ones given below !
 
-# chessboardSize = (9,6)
-# frameSize = (640,480)
-chessboardSize = (24,17)
-frameSize = (1440,1080)
+#  exmaple : For jpeg image
+chessboardSize = (9,6)
+frameSize = (640,480)
+
+
 
 
 # termination criteria
@@ -35,8 +36,9 @@ imgpoints = [] # 2d points in image plane.
 
 
 
-# images = glob.glob('images/*.jpeg')
-images = glob.glob('images/*.png')
+
+
+images = glob.glob('images/jpg_images/*.jpeg')
 
 # images = glob.glob('C:\Users\PYTHON\Desktop\cam_calib\images\*.jpeg')
 for image in images:
@@ -88,21 +90,22 @@ print("Translation Vector :\n",tvecs)
 # ############## UNDISTORTION #####################################################
 
 # img = cv.imread('images/calib1.jpeg')
-img = cv.imread('images/calib8.png')
+
+img = cv.imread('images/jpg_images/calib6.jpeg')
 h,  w = img.shape[:2] 
 # getOptimalNewCameraMatrix:  to get more accurate result 
 newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(cameraMatrix, dist, (w,h), 1, (w,h))
 
 
-
-# Undistort 1. Using <strong>cv.undistort()</strong>
+#  to compare two methods undistorion  as following :
+# Undistort 1. Using cv.undistort()
 dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
 # crop the image
 x, y, w, h = roi
 dst = dst[y:y+h, x:x+w]
 # result of calibration saves here 
 # cv.imwrite('calibratedcalib4jpeg.jpeg', dst)
-cv.imwrite('calibResult8.png', dst)
+cv.imwrite('JpegCalibResult6Undistort.jpeg', dst)
 
 
 # or 2. Using <strong>remapping</strong>
@@ -112,7 +115,7 @@ dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
 # crop the image
 x, y, w, h = roi
 dst = dst[y:y+h, x:x+w]
-cv.imwrite('caliResult81.png', dst)
+cv.imwrite('JpegcaliResult6RectifyMap.jpeg', dst)
 
 
 
@@ -128,47 +131,38 @@ for i in range(len(objpoints)):
 print( "total error: {}".format(mean_error/len(objpoints)) )
 print("\n\n\n")
 
+
 # ============================================================
-# RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - 
+# RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT - RESULT -
 # Camera Calibrated :
-#  1.2915046165333723
+#  4.822480582894426
 # camera Matrix :
-#  [[1.08447791e+03 0.00000000e+00 7.40007822e+02]
-#  [0.00000000e+00 1.08523372e+03 5.72964984e+02]
-#  [0.00000000e+00 0.00000000e+00 1.00000000e+00]]
+#  [[207.98555715   0.         233.83363443]
+#  [  0.         215.80447513 131.22614746]
+#  [  0.           0.           1.        ]]
 # distortaion Parameters :
-#  [[-0.20874147  0.11251551  0.00262093 -0.00103003 -0.05798302]]
+#  [[-0.54220951  0.14590738 -0.02944134 -0.06591464 -0.01985249]]
 # Rotation Vectors :
-#  (array([[-0.0101702 ],
-#        [ 0.00950659],
-#        [ 0.03641409]]), array([[-0.01767589],
-#        [ 0.00649912],
-#        [ 0.02003055]]), array([[ 0.30085187],
-#        [ 0.00654742],
-#        [-0.0192971 ]]), array([[-0.00790216],
-#        [ 0.00468764],
-#        [-0.00076035]]), array([[-0.0164335 ],
-#        [ 0.00331607],
-#        [-1.5881517 ]]), array([[-1.72092564e-02],
-#        [ 1.58392238e-03],
-#        [-1.59404724e+00]]))
+#  (array([[ 0.50189156],
+#        [-0.24058469],
+#        [ 0.08305786]]), array([[-0.18165508],
+#        [-0.43868706],
+#        [-0.18028031]]), array([[-0.27398524],
+#        [-1.0570826 ],
+#        [-0.21057734]]), array([[ 0.30344289],
+#        [ 1.0952081 ],
+#        [-2.75363674]]))
 # Translation Vector :
-#  (array([[-928.41319407],
-#        [ 227.28980417],
-#        [1305.55520648]]), array([[-622.39682228],
-#        [-419.6633396 ],
-#        [1309.62704725]]), array([[-529.50686257],
-#        [ 231.44934237],
-#        [1191.37580598]]), array([[-426.60551171],
-#        [ 267.86028019],
-#        [1300.06676781]]), array([[-404.27294283],
-#        [ 459.56273976],
-#        [1299.24929065]]), array([[ -98.23489831],
-#        [ 548.38187192],
-#        [1297.80596571]]))
-# total error: 0.04418011714162698
-
-
+#  (array([[-201.40680986],
+#        [-131.04321349],
+#        [ 221.84636408]]), array([[-251.42253234],
+#        [ -88.94856003],
+#        [ 160.46151499]]), array([[-136.43894572],
+#        [ -93.58242911],
+#        [ 136.73193896]]), array([[-64.92590337],
+#        [ 26.69613923],
+#        [264.61734897]]))
+# total error: 0.6536647620094173
 
 
 
